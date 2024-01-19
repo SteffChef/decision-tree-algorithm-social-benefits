@@ -1,0 +1,161 @@
+{
+    "social_benefits": [
+        {
+            "name": "Bürgergeld",
+            "requirements": {
+                "type": "AND",
+                "content": [
+                    {
+                        "type": "attribute_categorical",
+                        "content": {
+                            "title": "Lebensmittelpunkt_Deutschland",
+                            "required_value": [
+                                "ja"
+                            ]
+                        }
+                    },
+                    {
+                        "type": "attribute_categorical",
+                        "content": {
+                            "title": "Hilfebedürftigkeit",
+                            "required_value": [
+                                "ja"
+                            ]
+                        }
+                    },
+                    {
+                        "type": "attribute_numerical",
+                        "content": {
+                            "title": "Alter",
+                            "vergleichsoperator": ">=",
+                            "required_value": [
+                                15
+                            ]
+                        }
+                    },
+                    {
+                        "type": "attribute_categorical",
+                        "content": {
+                            "title": "Berufsstatus",
+                            "required_value": [
+                                "arbeitend",
+                                "arbeitssuchend"
+                            ]
+                        }
+                    },
+                    {
+                        "type": "attribute_numerical",
+                        "content": {
+                            "title": "Potentielle Arbeitszeit pro Tag in Stunden",
+                            "vergleichsoperator": ">=",
+                            "required_value": [
+                                3
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "BAB",
+            "requirements": {
+                "type": "AND",
+                "content": [
+                    {
+                        "type": "OR",
+                        "content": [
+                            {
+                                "type": "AND",
+                                "content": [
+                                    {
+                                        "type": "attribute_numerical",
+                                        "content": {
+                                            "title": "Alter",
+                                            "vergleichsoperator": "[]",
+                                            "required_value": [
+                                                15,
+                                                17
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "type": "OR",
+                                        "content": [
+                                            {
+                                                "type": "attribute_categorical",
+                                                "content": {
+                                                    "title": "Kinder unter 25",
+                                                    "required_value": [
+                                                        "ja"
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "type": "attribute_categorical",
+                                                "content": {
+                                                    "title": "Familienstand",
+                                                    "required_value": [
+                                                        "verheiratet"
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "attribute_categorical",
+                                "content": {
+                                    "title": "Hohe Entfernung zum Ausbildungsbetrieb",
+                                    "required_value": [
+                                        "ja"
+                                    ]
+                                }
+                            },
+                            {
+                                "type": "attribute_numerical",
+                                "content": {
+                                    "title": "Alter",
+                                    "vergleichsoperator": ">=",
+                                    "required_value": [
+                                        18
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "attribute_categorical",
+                        "content": {
+                            "title": "Berufsstatus",
+                            "required_value": [
+                                "Ausbildung"
+                            ]
+                        }
+                    },
+                    {
+                        "type": "attribute_categorical",
+                        "content": {
+                            "title": "Wohnen bei Eltern",
+                            "required_value": [
+                                "nein"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Testest",
+            "requirements": {
+                "type": "attribute_categorical",
+                "content": {
+                    "title": "Berufsstatus",
+                    "required_value": [
+                        "Ausbildung"
+                    ]
+                }
+            }
+        }
+    ]
+}

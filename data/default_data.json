@@ -129,5 +129,59 @@
         }
       }
     }
+  ],
+  "attributes": [
+    {
+      "title": "Lebensmittelpunkt_Deutschland",
+      "type": "attribute_categorical",
+      "question": "Ist dein Lebensmittelpunkt in Deutschland?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "title": "Wohnen bei Eltern",
+      "type": "attribute_categorical",
+      "question": "Wohnst du aktuell bei deinen Eltern?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "title": "Potentielle Arbeitszeit pro Tag in Stunden",
+      "type": "attribute_numerical",
+      "question": "Wie viele Stunden kannst du potentiell am Tag arbeiten?"
+    },
+    {
+      "title": "Berufsstatus",
+      "type": "attribute_categorical",
+      "question": "Was ist dein aktueller Berufsstatus?",
+      "answer_options": ["Ausbildung", "Rente", "arbeitend", "arbeitssuchend"]
+    },
+    {
+      "title": "Hohe Entfernung zum Ausbildungsbetrieb",
+      "type": "attribute_categorical",
+      "question": "Ist die Fahrtzeit zu deinem Ausbildungsbetrieb über 2 Stunden?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "title": "Alter",
+      "type": "attribute_numerical",
+      "question": "Wie alt bist du?"
+    },
+    {
+      "title": "Familienstand",
+      "type": "attribute_categorical",
+      "question": "Wie ist dein Familienstand?",
+      "answer_options": ["Verheiratet", "geschieden"]
+    },
+    {
+      "title": "Hilfebedürftigkeit",
+      "type": "attribute_categorical",
+      "question": "Bist du hilfebedürftig?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "title": "Kinder unter 25",
+      "type": "attribute_categorical",
+      "question": "Hast du Kinder unter 25 Jahre?",
+      "answer_options": ["ja", "nein"]
+    }
   ]
 }

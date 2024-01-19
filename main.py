@@ -101,6 +101,14 @@ class Attribute_Categorical(Attribute):
         ]
 
         UserInterface.get_user_input_menu_navigation(message,choices,returnfunction)
+
+    def export(self) -> dict:
+        return {
+            'type': 'attribute_categorical',
+            'title': self.title,
+            'question': self.question,
+            'answer_options': self.answer_options
+        }
         
 class Attribute_Numerical(Attribute):
                 
@@ -115,6 +123,13 @@ class Attribute_Numerical(Attribute):
         ]
 
         UserInterface.get_user_input_menu_navigation(message,choices,returnfunction)
+
+    def export(self) -> dict:
+        return {
+            'type': 'attribute_numerical',
+            'title': self.title,
+            'question': self.question
+        }
             
 class Requirement:
 
@@ -359,7 +374,7 @@ class Algorithm:
 
             return Social_Benefit(json['name'], requirement)
         
-        self.social_benefits = [social_benefit_from_json(v) for v in json['social_benefits']]
+        self.social_benefits = [social_benefit_from_json(v) for v in json]
 
         self.set_relevant_attributes()
         self.evaluation = {social_benefit.name:True for social_benefit in self.social_benefits}
@@ -375,6 +390,27 @@ class Algorithm:
         self.attributes = [attribute_categorical_from_json(attribute) if attribute['type'] == 'attribute_categorical'
                            else attribute_numerical_from_json(attribute) if attribute['type'] == 'attribute_numerical'
                            else None for attribute in json]
+        
+    def load_data_from_json(self,json:dict):
+        self.load_attributes_from_json(json['attributes'])
+        self.load_requirements_from_json(json['social_benefits'])
+
+    def export_data_to_json(self) -> dict:
+        data = {
+            'attributes': [
+                attribute.export() for attribute in self.attributes
+            ],
+            'social_benefits': [
+                social_benefit.export() for social_benefit in self.social_benefits
+            ]
+        }
+
+        file_path = './data/exported_data/exported_data.json'
+
+        with open(file_path, 'w',encoding='utf-8') as json_file:
+            json.dump(data, json_file,ensure_ascii=False,indent=4)
+
+        print(f"Data have been written to {file_path} as a JSON file.")
         
     
     def export_requirements_to_json(self) -> dict:
@@ -474,7 +510,7 @@ class Algorithm:
 
         choises += [("Add Social Benefit", exit)]
 
-        choises += [("Export Requirements", self.export_requirements_to_json)]
+        choises += [("Export Requirements", self.export_data_to_json)]
         
         choises += [("<Back>", self.open_main_menu)]
 
@@ -498,7 +534,7 @@ class Algorithm:
 
         choises += [("<Add Attribute>", exit)]
 
-        choises += [("<Export Attributes>", self.export_attributes_to_json)]
+        choises += [("<Export Attributes>", self.export_data_to_json)]
 
         choises += [("<Back>", self.open_main_menu)]
 
@@ -533,12 +569,11 @@ if __name__ == '__main__':
 
     algorithm = Algorithm()
 
-    attribute_data = json.load(open('/home/steffen/Bachelorarbeit/Praktischer_Teil/attributes.json', 'r'))
-    algorithm.load_attributes_from_json(json=attribute_data)
-    
-    social_benefit_data = json.load(open('/home/steffen/Bachelorarbeit/Praktischer_Teil/social_benefits.json', 'r'))
-    algorithm.load_requirements_from_json(json=social_benefit_data)
+    # Construct the full path to the JSON file
+    json_path = "./data/default_data.json"
 
+    default_data = json.load(open(json_path, 'r'))
+    algorithm.load_data_from_json(json=default_data)
 
     algorithm.open_main_menu()
 

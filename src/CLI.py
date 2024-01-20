@@ -15,10 +15,18 @@ class CLI:
 
     def run(self):
 
-        json_path = "./data/default_data.json"
+        # load exported data from json
+        # if there is no exported data, load default data from json
+        try:
+            print("Loading exported data.")
+            json_path = "./data/exported_data/exported_data.json"
+            data = json.load(open(json_path, 'r'))
+        except:
+            print("No exported data found. Loading default data.")
+            json_path = "./data/default_data.json"
+            data = json.load(open(json_path, 'r'))
 
-        default_data = json.load(open(json_path, 'r'))
-        self.algorithm.load_data_from_json(json=default_data)
+        self.algorithm.load_data_from_json(json=data)
 
         self.open_main_menu()
 
@@ -53,6 +61,15 @@ class CLI:
         answers = inquirer.prompt(questions,theme=inquirer.themes.GreenPassion())
         return answers['choice']
     
+    def get_user_input_confirm(self,question:str) -> bool:
+        questions = [
+            inquirer.Confirm('choice',
+                        message=question,
+                    ),
+        ]
+        answers = inquirer.prompt(questions,theme=inquirer.themes.GreenPassion())
+        return answers['choice']
+    
     def get_user_input_menu_navigation(self,message: str, choices):
         questions = [
             inquirer.List('choice',
@@ -61,17 +78,19 @@ class CLI:
                     ),
         ]
         chosen_function = inquirer.prompt(questions,theme=inquirer.themes.GreenPassion())['choice']
+
+
         return chosen_function
 
-    def print_tree(self,requirement, list,level=0, prefix="    "):
+    def calculate_requirement_tree(self,requirement, list,level=0, prefix="    "):
         if requirement is not None:
             # print("    " * level + prefix + requirement.get_tree_string())
-            list.append("    " * level + prefix + requirement.get_tree_string())
+            list.append(("    " * level + prefix + requirement.get_tree_string(),requirement))
             if isinstance(requirement,Logical_Requirement):
                 for i, child in enumerate(requirement.requirements):
                     is_last_child = i == len(requirement.requirements) - 1
                     child_prefix = "└── " if is_last_child else "├── "
-                    self.print_tree(requirement=child,list=list, level=level + 1, prefix=child_prefix)
+                    self.calculate_requirement_tree(requirement=child,list=list, level=level + 1, prefix=child_prefix)
 
     # Menus
                     
@@ -85,8 +104,8 @@ class CLI:
             ("Start Dialogue", self.start_dialogue),
             ("Edit Attributes", self.show_attributes_in_navigation),
             ("Edit Social Benefits", self.show_social_benefits_in_navigation),
-            ("Export Requirements", self.algorithm.export_data_to_json),
-            ("Exit", exit)
+            ("Export Data", self.algorithm.export_data_to_json),
+            ("<Exit>", exit)
         ]
 
         chosen_answer = self.get_user_input_menu_navigation(message=message,choices=choices)
@@ -100,13 +119,13 @@ class CLI:
         message="Social Benefits"
 
         choices = [(social_benefit.name, social_benefit) for social_benefit in self.algorithm.social_benefits]
-        choices += [("Add Social Benefit", self.open_main_menu)]
+        choices += [("<Add Social Benefit>", self.open_main_menu)]
         choices += [("<Back>", self.open_main_menu)]
 
         chosen_answer = self.get_user_input_menu_navigation(message,choices)
 
         if isinstance(chosen_answer,Social_Benefit):
-            chosen_answer()
+            self.edit_social_benefit(social_benefit=chosen_answer)
         else:
             chosen_answer()
 
@@ -118,7 +137,7 @@ class CLI:
     
             choices=[
                 (f"Edit name: '{social_benefit.name}'", self.edit_social_benefit_name),
-                (f"Edit requirement-tree", self.edit_social_benefit_requirement),
+                ("Edit requirement-tree", self.edit_social_benefit_requirement),
                 ("<Back>", "back")
             ]
     
@@ -141,8 +160,60 @@ class CLI:
     # Menu for editing social benefit-requirement-tree
         
     def edit_social_benefit_requirement(self,social_benefit:Social_Benefit):
-        social_benefit.print_tree()
-        self.edit_social_benefit(social_benefit)
+
+        message = f"Edit requirement-tree for social benefit '{social_benefit.name}'"
+
+        choices = []
+        self.calculate_requirement_tree(requirement=social_benefit.requirement,list=choices)
+
+        choices += [
+            ("<Back>", self.edit_social_benefit)
+        ]
+
+        chosen_answer = self.get_user_input_menu_navigation(message,choices)
+        
+        if isinstance(chosen_answer,Logical_Requirement):
+            self.edit_logical_requirement(logical_requirement=chosen_answer,social_benefit=social_benefit)
+        elif isinstance(chosen_answer,Requirement_Categorical):
+            self.edit_requirement_categorical(chosen_answer)
+        elif isinstance(chosen_answer,Requirement_Numerical):
+            self.edit_requirement_numerical(chosen_answer)
+        else:
+            self.edit_social_benefit(social_benefit)
+
+    # Menu for editing logical requirements
+    
+    def edit_logical_requirement(self,logical_requirement:Logical_Requirement,social_benefit:Social_Benefit):
+            
+            message = f"Edit logical requirement '{logical_requirement.get_tree_string()}'"
+
+            # to be finished
+
+                
+
+            choices = [
+                ("Add AND", "back"),
+                ("Add OR", "back"),
+                ("Add Concrete Requirement", "back"),
+                ("<Back>", "back")
+            ]
+
+            if logical_requirement.parent is not None:
+                choices.insert(0,("Remove Requirement", logical_requirement.parent.remove_requirement))
+            else:
+                choices.insert(0,("Remove Requirement", social_benefit.remove_requirement))
+    
+            chosen_answer = self.get_user_input_menu_navigation(message,choices)
+    
+            if chosen_answer == "back":
+                self.edit_social_benefit_requirement(social_benefit=social_benefit)
+            else:
+                confirmation = self.get_user_input_confirm("Are you sure you want to remove this requirement?")
+                if confirmation:
+                    chosen_answer(logical_requirement)
+                    self.edit_social_benefit_requirement(social_benefit=social_benefit)
+                else:
+                    self.edit_logical_requirement(logical_requirement,social_benefit)
 
     # Menu for selection of attributes
         
@@ -152,14 +223,14 @@ class CLI:
 
         choices = [(attribute.title, attribute) for attribute in self.algorithm.attributes]
 
-        choices += [("<Add Attribute>", self.add_attribute)]
+        choices += [("<Add Attribute>", exit)]
 
         choices += [("<Back>", self.open_main_menu)]
 
         chosen_answer = self.get_user_input_menu_navigation(message,choices)
 
         if isinstance(chosen_answer,Attribute):
-            chosen_answer()
+            self.edit_attribute(attribute=chosen_answer)
         else:
             chosen_answer()
 
@@ -172,13 +243,12 @@ class CLI:
         choices=[
             (f"Edit title: '{attribute.title}'", self.edit_attribute_title),
             (f"Edit question: '{attribute.question}'", self.edit_attribute_question),
-            (f"Edit possible answers: '{attribute.answer_options}'", self.edit_attribute_answer_options),
             ("<Back>", "back")
         ]
 
-        # Remove answer-options if attribute is numerical
+        # Insert answer-options if attribute is numerical
         if isinstance(attribute,Attribute_Categorical):
-            choices.pop(2)
+            choices.insert(2,(f"Edit possible answers: '{attribute.answer_options}'", self.edit_attribute_answer_options))
 
         chosen_answer = self.get_user_input_menu_navigation(message,choices)
 
@@ -190,7 +260,7 @@ class CLI:
     # Menu for editing attribute-title
             
     def edit_attribute_title(self,attribute:Attribute):
-        new_title = self.get_user_input_text(question=f"Enter a new title for the attribute '{self.title}'")
+        new_title = self.get_user_input_text(question=f"Enter a new title for the attribute '{attribute.title}'")
         attribute.title = new_title
 
         self.edit_attribute(attribute)
@@ -198,7 +268,7 @@ class CLI:
     # Menu for editing attribute-question
         
     def edit_attribute_question(self,attribute:Attribute):
-        new_question = self.get_user_input_text(question=f"Enter a new question for the attribute '{self.title}'")
+        new_question = self.get_user_input_text(question=f"Enter a new question for the attribute '{attribute.question}'")
         attribute.question = new_question
 
         self.edit_attribute(attribute)
@@ -207,7 +277,7 @@ class CLI:
         
     def edit_attribute_answer_options(self,attribute:Attribute):
         if isinstance(attribute,Attribute_Categorical):
-            new_answer_options = self.get_user_input_text(question=f"Enter new answer options for the attribute, separated by a comma (,) '{self.title}'").split(',')
+            new_answer_options = self.get_user_input_text(question=f"Enter new answer options for the attribute, separated by a comma (,) '{attribute.title}'").split(',')
             attribute.answer_options = new_answer_options
 
         self.edit_attribute(attribute)
@@ -218,6 +288,8 @@ class CLI:
     def start_dialogue(self):
 
         while self.algorithm.relevant_attributes:
+
+            print(f"Relevant Attributes: {self.algorithm.relevant_attributes}")
 
             best_attribute = self.algorithm.get_best_attribute()
 
@@ -231,7 +303,7 @@ class CLI:
 
             self.algorithm.question_count += 1
 
-        print(f"Finished questionare. Result: {result}")
+        print(f"Finished questionnaire. Result: {result}")
 
         time.sleep(1)
 

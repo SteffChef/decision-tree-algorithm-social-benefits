@@ -11,29 +11,56 @@ class Algorithm:
 
     def load_requirements_from_json(self,json: dict):
 
-        def requirement_categorical_from_json(json: dict) -> 'Requirement_Categorical':
-            return Requirement_Categorical(attribute=self.get_attribute_from_title(json['title']), required_value=json['required_value'])
+        def requirement_categorical_from_json(json: dict,parent = None) -> 'Requirement_Categorical':
+
+            req =  Requirement_Categorical(attribute=self.get_attribute_from_title(json['title']), required_value=json['required_value'])
+
+            if parent is not None:
+                req.parent = parent
+            
+            return req
         
-        def requirement_numerical_from_json(json: dict) -> 'Requirement_Numerical':
-            return Requirement_Numerical(attribute=self.get_attribute_from_title(json['title']),vergleichsoperator=json['vergleichsoperator'], required_value=json['required_value'] )
+        def requirement_numerical_from_json(json: dict, parent = None) -> 'Requirement_Numerical':
+            req =  Requirement_Numerical(attribute=self.get_attribute_from_title(json['title']),vergleichsoperator=json['vergleichsoperator'], required_value=json['required_value'] )
+
+            if parent is not None:
+                req.parent = parent
+            
+            return req
         
-        def logical_or_from_json(json: dict) -> 'Logical_OR':
+        def logical_or_from_json(json: dict,parent = None) -> 'Logical_OR':
             requirements = [logical_and_from_json(v) if v['type'] == 'AND'
                             else logical_or_from_json(v) if v['type'] == 'OR'
                             else requirement_categorical_from_json(v['content']) if v['type'] == 'attribute_categorical'
                             else requirement_numerical_from_json(v['content']) if v['type'] == 'attribute_numerical'
                             else None for v in json['content']]
 
-            return Logical_OR(requirements)
+            req = Logical_OR(requirements)
+
+            if parent is not None:
+                req.parent = parent
+
+            for requirement in req.requirements:
+                requirement.parent = req
+            
+            return req
         
-        def logical_and_from_json(json: dict) -> 'Logical_AND':
+        def logical_and_from_json(json: dict,parent = None) -> 'Logical_AND':
             requirements = [logical_and_from_json(v) if v['type'] == 'AND'
                             else logical_or_from_json(v) if v['type'] == 'OR'
                             else requirement_categorical_from_json(v['content']) if v['type'] == 'attribute_categorical'
                             else requirement_numerical_from_json(v['content']) if v['type'] == 'attribute_numerical'
                             else None for v in json['content']]
 
-            return Logical_AND(requirements)
+            req = Logical_AND(requirements)
+
+            if parent is not None:
+                req.parent = parent
+            
+            for requirement in req.requirements:
+                requirement.parent = req
+            
+            return req
         
         def social_benefit_from_json(json: dict) -> 'Social_Benefit':
             if json['requirements']['type'] == 'AND':

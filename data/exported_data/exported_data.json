@@ -6,7 +6,8 @@
             "question": "Ist dein Lebensmittelpunkt in Deutschland?",
             "answer_options": [
                 "ja",
-                "nein"
+                "nein",
+                "machbar"
             ]
         },
         {

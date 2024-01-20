@@ -5,6 +5,10 @@ class Requirement:
 
     def __init__(self):
         self.is_relevant = True
+        self.parent = None
+    
+    def set_parent(self, parent: 'Requirement'):
+        self.parent = parent
 
 class Logical_Requirement(Requirement):
 
@@ -29,6 +33,13 @@ class Logical_Requirement(Requirement):
         self.is_relevant = True
         for requirement in self.requirements:
             requirement.reset_evaluations()
+
+    def remove_requirement(self, requirement: Requirement):
+        self.requirements.remove(requirement)
+        self.set_relevant_attributes()
+        if self.parent is not None:
+            self.parent.set_relevant_attributes()
+        print(f"Requirement {requirement.get_tree_string()} successfully removed.")
 
 class Logical_AND(Logical_Requirement):
 

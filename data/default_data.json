@@ -118,16 +118,6 @@
           }
         ]
       }
-    },
-    {
-      "name": "Testest",
-      "requirements": {
-        "type": "attribute_categorical",
-        "content": {
-          "title": "Berufsstatus",
-          "required_value": ["Ausbildung"]
-        }
-      }
     }
   ],
   "attributes": [

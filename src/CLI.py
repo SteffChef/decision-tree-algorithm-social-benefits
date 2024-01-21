@@ -70,6 +70,16 @@ class CLI:
         answers = inquirer.prompt(questions,theme=inquirer.themes.GreenPassion())
         return answers['choice']
     
+    def get_user_input_checkbox(self,question:str,choices:List[str]) -> List[str]:
+        questions = [
+            inquirer.Checkbox('choice',
+                        message=question,
+                        choices=choices,
+                    ),
+        ]
+        answers = inquirer.prompt(questions,theme=inquirer.themes.GreenPassion())
+        return answers['choice']
+    
     def get_user_input_menu_navigation(self,message: str, choices):
         questions = [
             inquirer.List('choice',
@@ -109,13 +119,24 @@ class CLI:
         message="Social Benefits"
 
         choices = [(social_benefit.name, (self.edit_social_benefit,(social_benefit,))) for social_benefit in self.algorithm.social_benefits]
-        choices += [("<Add Social Benefit>", (self.open_main_menu,()))]
+        choices += [("<Add Social Benefit>", (self.add_social_benefit,()))]
         choices += [("<Back>", (self.open_main_menu,()))]
 
         chosen_answer = self.get_user_input_menu_navigation(message,choices)
 
         selected_function, parameters = chosen_answer
         selected_function(*parameters)
+
+    # Menu for adding new social benefits
+        
+    def add_social_benefit(self):
+            
+        new_social_benefit = Social_Benefit(name="New_Social_Benefit",requirement=Logical_AND(requirements=[]))
+        self.algorithm.add_social_benefit(new_social_benefit)
+
+        print(f"New social benefit '{new_social_benefit.name}' added.")
+
+        self.edit_social_benefit(new_social_benefit)
 
     # Menu for editing social benefits
             
@@ -180,9 +201,9 @@ class CLI:
         if isinstance(requirement,Logical_Requirement):
             self.edit_requirement_logical(requirement=requirement,social_benefit=social_benefit)
         elif isinstance(requirement,Requirement_Categorical):
-            self.edit_requirement_categorical(requirement=requirement)
+            self.edit_requirement_categorical(requirement=requirement,social_benefit=social_benefit)
         elif isinstance(requirement,Requirement_Numerical):
-            self.edit_requirement_numerical(requirement=requirement)
+            self.edit_requirement_numerical(requirement=requirement,social_benefit=social_benefit)
         else:
             self.edit_social_benefit_requirement(social_benefit=social_benefit)
 
@@ -198,7 +219,7 @@ class CLI:
                 ("Remove Requirement", (self.remove_requirement,(requirement,social_benefit))),
                 ("Add AND", (self.edit_social_benefit_requirement,(social_benefit,))),
                 ("Add OR", (self.edit_social_benefit_requirement,(social_benefit,))),
-                ("Add Concrete Requirement", (self.edit_social_benefit_requirement,(social_benefit,))),
+                ("Add Concrete Requirement", (self.add_requirement_concrete,(requirement,social_benefit))),
                 ("<Back>", (self.edit_social_benefit_requirement,(social_benefit,)))
             ]
     
@@ -206,6 +227,37 @@ class CLI:
     
             selected_function,parameters = chosen_answer
             selected_function(*parameters)
+
+    def add_requirement_logical(self,social_benefit:Social_Benefit):
+        pass
+
+    # Menu for editing concrete requirements
+
+    def add_requirement_concrete(self,requirement:Requirement,social_benefit:Social_Benefit):
+
+        def add_requirement_concrete_attribute(requirement:Requirement,social_benefit:Social_Benefit,attribute:Attribute):
+            if isinstance(attribute,Attribute_Categorical):
+                new_requirement = Requirement_Categorical(attribute=attribute,required_value=attribute.answer_options[0])
+            else:
+                new_requirement = Requirement_Numerical(attribute=attribute,comparison_operator='==',required_value=0)
+
+            requirement.add_requirement(new_requirement)
+            new_requirement.parent = requirement
+
+            self.edit_requirement(new_requirement,social_benefit)
+        
+        message = f"Add concrete requirement to '{requirement.get_tree_string()}'"
+
+        choices = [
+            (f"{attribute.title}", (add_requirement_concrete_attribute,(requirement,social_benefit,attribute))) for attribute in self.algorithm.attributes
+        ]
+
+        choices += [("<Back>", (self.edit_social_benefit_requirement,(social_benefit,)))]
+
+        chosen_answer = self.get_user_input_menu_navigation(message,choices)
+
+        selected_function,parameters = chosen_answer
+        selected_function(*parameters)
 
     # Confirmation for removing requirements
 
@@ -222,13 +274,79 @@ class CLI:
 
     # Menu for editing categorical requirements
 
-    def edit_requirement_categorical(self,requirement:Requirement_Categorical):
-        pass
+    def edit_requirement_categorical(self,requirement:Requirement_Categorical,social_benefit:Social_Benefit):
+
+        message = f"Edit categorical requirement '{requirement.attribute.title}' in {requirement.required_value}'"
+
+        choices = [
+            (f"Edit required value(s): '{requirement.required_value}'", (self.edit_requirement_categorical_required_value,(requirement,social_benefit))),
+            ("Delete this Requirement", (requirement.parent.remove_requirement,(requirement,))),
+            ("<Back>", (self.edit_social_benefit_requirement,(social_benefit,)))
+        ]
+
+        chosen_answer = self.get_user_input_menu_navigation(message=message,choices=choices)
+
+        selected_function,parameters = chosen_answer
+        selected_function(*parameters)
+
+    def edit_requirement_categorical_required_value(self,requirement:Requirement_Categorical,social_benefit:Social_Benefit):
+
+        message = f"Edit required value(s) for attribute '{requirement.attribute.title}' (select with spacebar, confirm with enter)"
+
+        choices = [f"{answer_options}" for answer_options in requirement.attribute.answer_options]
+
+        chosen_answers = self.get_user_input_checkbox(message,choices)
+
+        requirement.required_value = chosen_answers
+
+        self.edit_requirement_categorical(requirement=requirement,social_benefit=social_benefit)
+
 
     # Menu for editing numerical requirements
 
-    def edit_requirement_numerical(self,requirement:Requirement_Numerical):
-        pass
+    def edit_requirement_numerical(self,requirement:Requirement_Numerical,social_benefit:Social_Benefit):
+
+        def edit_comparison_operator(requirement:Requirement_Numerical,social_benefit:Social_Benefit):
+            message = f"Edit comparison operator for attribute '{requirement.attribute.title}'"
+
+            choices = [(operator,(requirement.set_comparison_operator,(operator,))) for operator in Requirement_Numerical.comparison_operators]
+
+            chosen_answer = self.get_user_input_menu_navigation(message=message,choices=choices)
+
+            selected_function,parameters = chosen_answer
+            selected_function(*parameters)
+
+            self.edit_requirement_numerical(requirement=requirement,social_benefit=social_benefit)
+
+        def edit_requirement_numerical_required_value(requirement:Requirement_Numerical,social_benefit:Social_Benefit):
+
+            if requirement.comparison_operator == '[]':
+                new_required_value = self.get_user_input_text(question=f"Enter a new required value for the attribute '{requirement.attribute.title}' (separate min and max with a comma (,))").split(',')
+                new_required_value = [int(new_required_value[0]),int(new_required_value[1])]
+            else:
+                new_required_value = self.get_user_input_text(question=f"Enter a new required value for the attribute '{requirement.attribute.title}'")
+                new_required_value = [int(new_required_value)]
+
+            if new_required_value == requirement.required_value:
+                print("Required value not changed.")
+            else:
+                requirement.required_value = new_required_value
+
+            self.edit_requirement_numerical(requirement=requirement,social_benefit=social_benefit)
+            
+        message = f"Edit numerical requirement '{requirement.attribute.title} {requirement.comparison_operator} {requirement.required_value}'"
+
+        choices = [
+            (f"Edit Operator: '{requirement.comparison_operator}'", (edit_comparison_operator,(requirement,social_benefit))),
+            (f"Edit required value: '{requirement.required_value}'", (edit_requirement_numerical_required_value,(requirement,social_benefit))),
+            ("Delete this Requirement", (requirement.parent.remove_requirement,(requirement,))),
+            ("<Back>", (self.edit_social_benefit_requirement,(social_benefit,)))
+        ]
+
+        chosen_answer = self.get_user_input_menu_navigation(message=message,choices=choices)
+
+        selected_function,parameters = chosen_answer
+        selected_function(*parameters)
 
     # Menu for selection of attributes
         
@@ -238,9 +356,9 @@ class CLI:
 
         choices = [(attribute.title, (self.edit_attribute,(attribute,))) for attribute in self.algorithm.attributes]
 
-        choices += [("<Add Attribute>", exit)]
+        choices += [("<Add Attribute>", (self.add_attribute,()))]
 
-        choices += [("<Back>", self.open_main_menu)]
+        choices += [("<Back>", (self.open_main_menu,()))]
 
         chosen_answer = self.get_user_input_menu_navigation(message,choices)
 
@@ -256,6 +374,7 @@ class CLI:
         choices=[
             (f"Edit title: '{attribute.title}'", (self.edit_attribute_title,(attribute,))),
             (f"Edit question: '{attribute.question}'", (self.edit_attribute_question,(attribute,))),
+            (f"Delete this Attribute", (self.remove_attribute,(attribute,))),
             ("<Back>", (self.show_attributes_in_navigation,()))
         ]
 
@@ -272,7 +391,14 @@ class CLI:
             
     def edit_attribute_title(self,attribute:Attribute):
         new_title = self.get_user_input_text(question=f"Enter a new title for the attribute '{attribute.title}'")
-        attribute.title = new_title
+
+        if new_title == attribute.title or new_title == "":
+            print("Title not changed.")
+        elif self.algorithm.check_attribute_title(new_title):
+            print("Title already exists.")
+        else:
+            attribute.title = new_title
+            print(f"Title changed to '{attribute.title}'.")
 
         self.edit_attribute(attribute)
 
@@ -292,6 +418,54 @@ class CLI:
             attribute.answer_options = new_answer_options
 
         self.edit_attribute(attribute)
+
+    # Menu for adding new attributes
+    
+    def add_attribute(self):
+
+        def add_attribute_numerical():
+            new_attribute = Attribute_Numerical(title="New_Attribute_Numerical",question="New Question")
+            self.algorithm.add_attribute(new_attribute)
+
+            print(f"New attribute '{new_attribute.title}' added.")
+
+            self.edit_attribute(new_attribute)
+        
+        def add_attribute_categorical():
+            new_attribute = Attribute_Categorical(title="New_Attribute_Categorical",question="New Question",answer_options=["Option1","Option2"])
+            self.algorithm.add_attribute(new_attribute)
+
+            print(f"New attribute '{new_attribute.title}' added.")
+
+            self.edit_attribute(new_attribute)
+
+
+        message = "What kind of attribute do you want to add?"
+        choices = [
+            ("Numerical", (add_attribute_numerical,())),
+            ("Categorical", (add_attribute_categorical,())),
+            ("<Back>", (self.show_attributes_in_navigation,()))
+        ]
+
+        chosen_answer = self.get_user_input_menu_navigation(message,choices)
+
+        selected_function,parameters = chosen_answer
+        selected_function(*parameters)
+
+    # Function for removing attributes
+
+    def remove_attribute(self,attribute:Attribute):
+        
+        confirmation = self.get_user_input_confirm("Are you sure you want to remove this attribute? (This will also remove all requirements that use this attribute.)")
+        if confirmation:
+            self.algorithm.remove_attribute(attribute)
+            time.sleep(1)
+            self.show_attributes_in_navigation()
+        else:
+            print(f"Attribute '{attribute.title}' not removed.")
+            self.edit_attribute(attribute)
+
+
 
 
     # Start of the dialogue

@@ -23,7 +23,7 @@
             "type": "attribute_numerical",
             "content": {
               "title": "Alter",
-              "vergleichsoperator": ">=",
+              "comparison_operator": ">=",
               "required_value": [15]
             }
           },
@@ -38,7 +38,7 @@
             "type": "attribute_numerical",
             "content": {
               "title": "Potentielle Arbeitszeit pro Tag in Stunden",
-              "vergleichsoperator": ">=",
+              "comparison_operator": ">=",
               "required_value": [3]
             }
           }
@@ -60,7 +60,7 @@
                     "type": "attribute_numerical",
                     "content": {
                       "title": "Alter",
-                      "vergleichsoperator": "[]",
+                      "comparison_operator": "[]",
                       "required_value": [15, 17]
                     }
                   },
@@ -96,7 +96,7 @@
                 "type": "attribute_numerical",
                 "content": {
                   "title": "Alter",
-                  "vergleichsoperator": ">=",
+                  "comparison_operator": ">=",
                   "required_value": [18]
                 }
               }

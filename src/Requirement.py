@@ -10,6 +10,9 @@ class Requirement:
     def set_parent(self, parent: 'Requirement'):
         self.parent = parent
 
+    def set_social_benefit(self, social_benefit):
+        self.social_benefit = social_benefit
+
 class Logical_Requirement(Requirement):
 
     def __init__(self, requirements: List[Requirement]):
@@ -29,6 +32,13 @@ class Logical_Requirement(Requirement):
     def get_relevant_attributes(self) -> Set[str]:
         return self.relevant_attributes
     
+    def add_requirement(self, requirement: Requirement):
+        self.requirements.append(requirement)
+        self.set_relevant_attributes()
+        if self.parent is not None:
+            self.parent.set_relevant_attributes()
+        print(f"Requirement {requirement.get_tree_string()} successfully added.")
+    
     def reset_evaluations(self):
         self.is_relevant = True
         for requirement in self.requirements:
@@ -40,6 +50,14 @@ class Logical_Requirement(Requirement):
         if self.parent is not None:
             self.parent.set_relevant_attributes()
         print(f"Requirement {requirement.get_tree_string()} successfully removed.")
+
+    def remove_requirement_by_attribute(self, attribute: Attribute):
+        for requirement in self.requirements:
+            if isinstance(requirement, Requirement_Concrete):
+                if requirement.attribute == attribute:
+                    self.remove_requirement(requirement)
+                    return
+            else: requirement.remove_requirement_by_attribute(attribute)
 
 class Logical_AND(Logical_Requirement):
 
@@ -99,41 +117,49 @@ class Requirement_Concrete(Requirement):
 
 class Requirement_Numerical(Requirement_Concrete):
 
-    def __init__(self,  attribute: Attribute, vergleichsoperator: str, required_value: List[int]):
+    comparison_operators = ['<','<=','>','>=','==','[]']
+
+    def __init__(self,  attribute: Attribute, comparison_operator: str, required_value: List[int]):
         super().__init__(attribute=attribute)
-        self.vergleichsoperator = vergleichsoperator
+        self.comparison_operator = comparison_operator
         self.required_value = required_value
+
+    def set_comparison_operator(self, comparison_operator: str):
+        if comparison_operator in self.comparison_operators:
+            self.comparison_operator = comparison_operator
+        else:
+            print(f"Invalid comparison operator {comparison_operator}.")
 
 
     def evaluate(self,data) -> bool:
         if any(key == self.attribute.title for key in data.keys()):
             self.is_relevant = False
             value = data[self.attribute.title]
-            if self.vergleichsoperator == '<':
+            if self.comparison_operator == '<':
                 return value < self.required_value[0]
-            if self.vergleichsoperator == '<=':
+            if self.comparison_operator == '<=':
                 return value <= self.required_value[0]
-            if self.vergleichsoperator == '>':
+            if self.comparison_operator == '>':
                 return value > self.required_value[0]
-            if self.vergleichsoperator == '>=':
+            if self.comparison_operator == '>=':
                 return value >= self.required_value[0]
-            if self.vergleichsoperator == '==':
+            if self.comparison_operator == '==':
                 return value == self.required_value[0]
-            if self.vergleichsoperator == '[]':
+            if self.comparison_operator == '[]':
                 return value >= self.required_value[0] and value <= self.required_value[1]
             return True
         else:
             return True
         
     def get_tree_string(self) -> str:
-        return f'{self.attribute.title} {self.vergleichsoperator} {self.required_value}'
+        return f'{self.attribute.title} {self.comparison_operator} {self.required_value}'
     
     def export(self) -> dict:
         return {
             'type': 'attribute_numerical',
             'content': {
                 'title': self.attribute.title,
-                'vergleichsoperator': self.vergleichsoperator,
+                'comparison_operator': self.comparison_operator,
                 'required_value': self.required_value
             }
         }

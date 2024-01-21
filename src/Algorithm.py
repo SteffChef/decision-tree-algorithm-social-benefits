@@ -21,7 +21,7 @@ class Algorithm:
             return req
         
         def requirement_numerical_from_json(json: dict, parent = None) -> 'Requirement_Numerical':
-            req =  Requirement_Numerical(attribute=self.get_attribute_from_title(json['title']),vergleichsoperator=json['vergleichsoperator'], required_value=json['required_value'] )
+            req =  Requirement_Numerical(attribute=self.get_attribute_from_title(json['title']),comparison_operator=json['comparison_operator'], required_value=json['required_value'] )
 
             if parent is not None:
                 req.parent = parent
@@ -114,7 +114,6 @@ class Algorithm:
 
         print(f"Data have been written to {file_path} as a JSON file.")
         
-    
     def export_requirements_to_json(self) -> dict:
         data = {
             'social_benefits': [
@@ -152,6 +151,10 @@ class Algorithm:
 
         print(f"Attributes have been written to {file_path} as a JSON file.")
 
+    def add_social_benefit(self,social_benefit: Social_Benefit):
+        self.social_benefits.append(social_benefit)
+        self.set_relevant_attributes()
+        print(f"Social Benefit {social_benefit.name} successfully added.")
     
     def set_relevant_attributes(self) -> Set[str]:
         data = {}
@@ -174,11 +177,29 @@ class Algorithm:
         self.set_relevant_attributes()
         return self.evaluation
     
+    def add_attribute(self,attribute: Attribute):
+        if self.check_attribute_title(attribute.title):
+            print(f"Attribute {attribute.title} already exists.")
+            return
+        self.attributes.append(attribute)
+
+    def remove_attribute(self,attribute: Attribute):
+        self.attributes.remove(attribute)
+        for social_benefit in self.social_benefits:
+            social_benefit.remove_requirement_by_attribute(attribute)
+        print(f"Attribute {attribute.title} successfully removed.")
+    
     def get_attribute_from_title(self,title: str) -> Attribute:
         for attribute in self.attributes:
             if attribute.title == title:
                 return attribute
         return None
+    
+    def check_attribute_title(self,title: str) -> bool:
+        for attribute in self.attributes:
+            if attribute.title == title:
+                return True
+        return False
 
     # Attributsauswahl! Verbessern
     def get_best_attribute(self) -> Attribute:

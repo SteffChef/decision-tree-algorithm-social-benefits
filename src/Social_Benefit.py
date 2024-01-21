@@ -1,5 +1,6 @@
 from typing import List, Set
-from src.Requirement import Requirement
+from src.Requirement import Requirement, Requirement_Concrete
+from src.Attribute import Attribute
 
 class Social_Benefit:
 
@@ -35,6 +36,12 @@ class Social_Benefit:
             return result
         else:
             return True
+        
+    def remove_requirement_by_attribute(self, attribute: Attribute):
+        if isinstance(self.requirement, Requirement_Concrete):
+            if self.requirement.attribute == attribute:
+                self.remove_requirement(self.requirement)
+        else: self.requirement.remove_requirement_by_attribute(attribute)
     
 
     def export(self) -> dict:

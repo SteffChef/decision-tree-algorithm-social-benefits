@@ -21,7 +21,13 @@
       "type": "attribute_categorical",
       "title": "Berufsstatus",
       "question": "Was ist dein aktueller Berufsstatus?",
-      "answer_options": ["Ausbildung", "Rente", "arbeitend", "arbeitssuchend"]
+      "answer_options": [
+        "Arbeit",
+        "Arbeitssuche",
+        "Ausbildung",
+        "Rente/Pension",
+        "Studium"
+      ]
     },
     {
       "type": "attribute_categorical",
@@ -38,7 +44,7 @@
       "type": "attribute_categorical",
       "title": "Familienstand",
       "question": "Wie ist dein Familienstand?",
-      "answer_options": ["Verheiratet", "geschieden"]
+      "answer_options": ["ledig", "verheiratet", "geschieden", "verwitwet"]
     },
     {
       "type": "attribute_categorical",
@@ -56,6 +62,148 @@
       "type": "attribute_categorical",
       "title": "Lage zu arbeiten",
       "question": "Bist du im Moment in der Lage zu arbeiten?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "type": "attribute_numerical",
+      "title": "Arbeitszeit in der Woche",
+      "question": "Wieviele Stunden arbeitest du in der Woche?"
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Arbeit: 12 Monate in den letzten 30 Monaten",
+      "question": "Hast du innerhalb der letzten 30 Monate mindestens 12 Monate gearbeitet?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Ausbildungsstätte",
+      "question": "Welche Ausbildungsstätte besuchst du?",
+      "answer_options": [
+        "Akademie",
+        "Universität",
+        "Schule",
+        "Fachhochschule",
+        "Hochschule"
+      ]
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Bedarf für finanzielle Unterstützung",
+      "question": "Brauchst du finanzielle Unterstützung?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "type": "attribute_numerical",
+      "title": "Vermögen",
+      "question": "Wie hoch ist dein Vermögen?"
+    },
+    {
+      "type": "attribute_numerical",
+      "title": "Alter bei Beginn des Studiums",
+      "question": "Wie alt warst du zu Beginn deines Studiums?"
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Studienpensum",
+      "question": "Studierst du in Vollzeit oder Teilzeit?",
+      "answer_options": ["Vollzeit", "Teilzeit"]
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Staatsangehörigkeit",
+      "question": "Welchem Staat gehörst du an?",
+      "answer_options": ["Deutschland", "EU-Ausland", "Ausland"]
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Dauerhafter Aufenthalt in Deutschland",
+      "question": "Hältst du dich dauerhaft in Deutschland auf?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Aufenthaltsgenehmigung",
+      "question": "Hast du eine Aufenthaltsgenehmigung?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "type": "attribute_numerical",
+      "title": "Jahre in Deutschland",
+      "question": "Seit wievielen Jahren lebst du bereits in Deutschland?"
+    },
+    {
+      "type": "attribute_numerical",
+      "title": "Haushaltsmitglieder",
+      "question": "Wie viele Personen leben inklusive dir in deinem Haushalt?"
+    },
+    {
+      "type": "attribute_numerical",
+      "title": "Mietkosten",
+      "question": "Wie viel Miete (kalt) zahlst du monatlich?"
+    },
+    {
+      "type": "attribute_numerical",
+      "title": "Einkommen Haushalt",
+      "question": "Wie hoch ist das monatliche Einkommen (brutto) aller Haushaltsmitglieder?"
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Problem bei Mietzahlung",
+      "question": "Hast du Probleme deine Miete zu bezahlen?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "type": "attribute_numerical",
+      "title": "Alter des Kindes",
+      "question": "Wie alt ist dein Kind?"
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Kindergeld Fremdbezug",
+      "question": "Hast du Kinder, für die kein Elternteilbereits Kindergeld bezieht?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Pflegegrad",
+      "question": "Wurde bei dir ein Pflegegrad von 2 oder höher festgestellt?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Private Pflege",
+      "question": "Wirst du häuslich von einer Privatperson gepflegt?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Kind Haushalt",
+      "question": "Wohnen deine Kinder bei dir im Haushalt?",
+      "answer_options": ["ja", "teilweise", "nein"]
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Kind jünger als 14",
+      "question": "Hast du ein Kind jünger als 14 Monate?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Kind in Ausbildung",
+      "question": "Hast du Kinder, die nicht bei dir wohnen und sich in Ausbildung befinden?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Asylberechtigung",
+      "question": "Bist du asylberechtigt?",
+      "answer_options": ["ja", "nein"]
+    },
+    {
+      "type": "attribute_categorical",
+      "title": "Einkommen der Eltern",
+      "question": "Haben deine Elter ein gemeinsames Einkommen von 70.000€ oder mehr?",
       "answer_options": ["ja", "nein"]
     }
   ],
@@ -197,6 +345,429 @@
               "title": "Lage zu arbeiten",
               "required_value": ["ja"]
             }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Arbeit: 12 Monate in den letzten 30 Monaten",
+              "required_value": ["ja"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "BAföG",
+      "requirements": {
+        "type": "AND",
+        "content": [
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Berufsstatus",
+              "required_value": ["Studium"]
+            }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Studienpensum",
+              "required_value": ["Vollzeit"]
+            }
+          },
+          {
+            "type": "attribute_numerical",
+            "content": {
+              "title": "Alter bei Beginn des Studiums",
+              "comparison_operator": "<=",
+              "required_value": [35]
+            }
+          },
+          {
+            "type": "attribute_numerical",
+            "content": {
+              "title": "Vermögen",
+              "comparison_operator": "<=",
+              "required_value": [15000]
+            }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Lebensmittelpunkt_Deutschland",
+              "required_value": ["ja"]
+            }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Einkommen der Eltern",
+              "required_value": ["nein"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Basiselterngeld",
+      "requirements": {
+        "type": "AND",
+        "content": [
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Kinder unter 25",
+              "required_value": ["ja"]
+            }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Kind Haushalt",
+              "required_value": ["ja"]
+            }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Lebensmittelpunkt_Deutschland",
+              "required_value": ["ja"]
+            }
+          },
+          {
+            "type": "attribute_numerical",
+            "content": {
+              "title": "Arbeitszeit in der Woche",
+              "comparison_operator": "<=",
+              "required_value": [32]
+            }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Kind jünger als 14",
+              "required_value": ["ja"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kindergeld",
+      "requirements": {
+        "type": "AND",
+        "content": [
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Lebensmittelpunkt_Deutschland",
+              "required_value": ["ja"]
+            }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Kinder unter 25",
+              "required_value": ["ja"]
+            }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Kindergeld Fremdbezug",
+              "required_value": ["ja"]
+            }
+          },
+          {
+            "type": "OR",
+            "content": [
+              {
+                "type": "attribute_categorical",
+                "content": {
+                  "title": "Kind Haushalt",
+                  "required_value": ["ja", "teilweise"]
+                }
+              },
+              {
+                "type": "AND",
+                "content": [
+                  {
+                    "type": "attribute_categorical",
+                    "content": {
+                      "title": "Kind Haushalt",
+                      "required_value": ["nein"]
+                    }
+                  },
+                  {
+                    "type": "attribute_categorical",
+                    "content": {
+                      "title": "Kind in Ausbildung",
+                      "required_value": ["ja"]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kinderzuschlag",
+      "requirements": {
+        "type": "AND",
+        "content": [
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Lebensmittelpunkt_Deutschland",
+              "required_value": ["ja"]
+            }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Kinder unter 25",
+              "required_value": ["ja"]
+            }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Kindergeld Fremdbezug",
+              "required_value": ["ja"]
+            }
+          },
+          {
+            "type": "attribute_numerical",
+            "content": {
+              "title": "Einkommen Haushalt",
+              "comparison_operator": "<=",
+              "required_value": [1600]
+            }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Kind Haushalt",
+              "required_value": ["ja", "teilweise"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pflegegeld",
+      "requirements": {
+        "type": "AND",
+        "content": [
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Pflegegrad",
+              "required_value": ["ja"]
+            }
+          },
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Private Pflege",
+              "required_value": ["ja"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Wohngeld",
+      "requirements": {
+        "type": "AND",
+        "content": [
+          {
+            "type": "attribute_categorical",
+            "content": {
+              "title": "Lebensmittelpunkt_Deutschland",
+              "required_value": ["ja"]
+            }
+          },
+          {
+            "type": "OR",
+            "content": [
+              {
+                "type": "AND",
+                "content": [
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Haushaltsmitglieder",
+                      "comparison_operator": "==",
+                      "required_value": [1]
+                    }
+                  },
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Einkommen Haushalt",
+                      "comparison_operator": "<=",
+                      "required_value": [1833]
+                    }
+                  },
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Mietkosten",
+                      "comparison_operator": "<=",
+                      "required_value": [491]
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "AND",
+                "content": [
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Haushaltsmitglieder",
+                      "comparison_operator": "==",
+                      "required_value": [2]
+                    }
+                  },
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Einkommen Haushalt",
+                      "comparison_operator": "<=",
+                      "required_value": [2470]
+                    }
+                  },
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Mietkosten",
+                      "comparison_operator": "<=",
+                      "required_value": [595]
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "AND",
+                "content": [
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Haushaltsmitglieder",
+                      "comparison_operator": "==",
+                      "required_value": [3]
+                    }
+                  },
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Einkommen Haushalt",
+                      "comparison_operator": "<=",
+                      "required_value": [3073]
+                    }
+                  },
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Mietkosten",
+                      "comparison_operator": "<=",
+                      "required_value": [708]
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "AND",
+                "content": [
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Haushaltsmitglieder",
+                      "comparison_operator": "==",
+                      "required_value": [4]
+                    }
+                  },
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Einkommen Haushalt",
+                      "comparison_operator": "<=",
+                      "required_value": [4148]
+                    }
+                  },
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Mietkosten",
+                      "comparison_operator": "<=",
+                      "required_value": [825]
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "AND",
+                "content": [
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Haushaltsmitglieder",
+                      "comparison_operator": "==",
+                      "required_value": [5]
+                    }
+                  },
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Einkommen Haushalt",
+                      "comparison_operator": "<=",
+                      "required_value": [4751]
+                    }
+                  },
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Mietkosten",
+                      "comparison_operator": "<=",
+                      "required_value": [944]
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "AND",
+                "content": [
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Haushaltsmitglieder",
+                      "comparison_operator": ">=",
+                      "required_value": [6]
+                    }
+                  },
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Einkommen Haushalt",
+                      "comparison_operator": "<=",
+                      "required_value": [5346]
+                    }
+                  },
+                  {
+                    "type": "attribute_numerical",
+                    "content": {
+                      "title": "Mietkosten",
+                      "comparison_operator": "<=",
+                      "required_value": [1058]
+                    }
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

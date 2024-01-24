@@ -98,19 +98,24 @@ class CLI:
 
     def open_main_menu(self):
 
-        message = "Main Menu"
+        message = "🏡 Main Menu"
 
         choices = [
             ("Start Dialogue", self.start_dialogue),
             ("Edit Attributes", self.show_attributes_in_navigation),
             ("Edit Social Benefits", self.show_social_benefits_in_navigation),
-            ("Export Data", self.algorithm.export_data_to_json),
+            ("Export Data", self.export_data),
             ("<Exit>", exit)
         ]
 
         chosen_answer = self.get_user_input_menu_navigation(message=message,choices=choices)
 
         chosen_answer()
+
+    def export_data(self):
+        self.algorithm.export_data_to_json()
+        time.sleep(1)
+        self.open_main_menu()
 
     # Menu for selection of social benefits
         
@@ -262,7 +267,7 @@ class CLI:
 
         def add_requirement_concrete_attribute(requirement:Requirement,social_benefit:Social_Benefit,attribute:Attribute):
             if isinstance(attribute,Attribute_Categorical):
-                new_requirement = Requirement_Categorical(attribute=attribute,required_value=attribute.answer_options[0])
+                new_requirement = Requirement_Categorical(attribute=attribute,required_value=[attribute.answer_options[0]])
             else:
                 new_requirement = Requirement_Numerical(attribute=attribute,comparison_operator='==',required_value=0)
 
@@ -276,6 +281,8 @@ class CLI:
         choices = [
             (f"{attribute.title}", (add_requirement_concrete_attribute,(requirement,social_benefit,attribute))) for attribute in self.algorithm.attributes
         ]
+
+        choices = sorted(choices, key=lambda x: x[0])
 
         choices += [("<Back>", (self.edit_social_benefit_requirement,(social_benefit,)))]
 
@@ -305,7 +312,7 @@ class CLI:
 
         choices = [
             (f"Edit required value(s): '{requirement.required_value}'", (self.edit_requirement_categorical_required_value,(requirement,social_benefit))),
-            ("Delete this Requirement", (requirement.parent.remove_requirement,(requirement,))),
+            ("Delete this Requirement", (self.remove_requirement,(requirement,social_benefit))),
             ("<Back>", (self.edit_social_benefit_requirement,(social_benefit,)))
         ]
 
@@ -364,7 +371,7 @@ class CLI:
         choices = [
             (f"Edit Operator: '{requirement.comparison_operator}'", (edit_comparison_operator,(requirement,social_benefit))),
             (f"Edit required value: '{requirement.required_value}'", (edit_requirement_numerical_required_value,(requirement,social_benefit))),
-            ("Delete this Requirement", (requirement.parent.remove_requirement,(requirement,))),
+            ("Delete this Requirement", (self.remove_requirement,(requirement,social_benefit))),
             ("<Back>", (self.edit_social_benefit_requirement,(social_benefit,)))
         ]
 

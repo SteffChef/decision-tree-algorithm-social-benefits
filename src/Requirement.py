@@ -13,7 +13,7 @@ class Requirement:
     def set_social_benefit(self, social_benefit):
         self.social_benefit = social_benefit
 
-class Logical_Requirement(Requirement):
+class Requirement_Logical(Requirement):
 
     def __init__(self, requirements: List[Requirement]):
         super().__init__()
@@ -59,7 +59,7 @@ class Logical_Requirement(Requirement):
                     return
             else: requirement.remove_requirement_by_attribute(attribute)
 
-class Logical_AND(Logical_Requirement):
+class Logical_AND(Requirement_Logical):
 
     def evaluate(self, data: dict) -> bool:
         if any(key in self.relevant_attributes for key in data.keys()):
@@ -79,7 +79,7 @@ class Logical_AND(Logical_Requirement):
             'content': [requirement.export() for requirement in self.requirements]
         }
 
-class Logical_OR(Logical_Requirement):
+class Logical_OR(Requirement_Logical):
     
     # should one requirement be true, the whole requirement is true, otherwise false
     def evaluate(self, data: dict) -> bool:

@@ -2,7 +2,7 @@ import inquirer
 from typing import List,Set
 from src.Algorithm import Algorithm
 from src.Attribute import Attribute, Attribute_Categorical, Attribute_Numerical
-from src.Requirement import Requirement,Logical_Requirement, Logical_AND, Logical_OR, Requirement_Categorical, Requirement_Numerical
+from src.Requirement import Requirement,Requirement_Logical, Logical_AND, Logical_OR, Requirement_Categorical, Requirement_Numerical
 from src.Social_Benefit import Social_Benefit
 import json
 import time
@@ -119,6 +119,9 @@ class CLI:
         message="Social Benefits"
 
         choices = [(social_benefit.name, (self.edit_social_benefit,(social_benefit,))) for social_benefit in self.algorithm.social_benefits]
+
+        choices = sorted(choices, key=lambda x: x[0])
+
         choices += [("<Add Social Benefit>", (self.add_social_benefit,()))]
         choices += [("<Back>", (self.open_main_menu,()))]
 
@@ -147,6 +150,7 @@ class CLI:
         choices=[
             (f"Edit name: '{social_benefit.name}'", (self.edit_social_benefit_name,(social_benefit,))),
             ("Edit requirement-tree", (self.edit_social_benefit_requirement,(social_benefit,))),
+            ("Delete this Social Benefit", (self.delete_social_benefit,(social_benefit,))),
             ("<Back>", (self.show_social_benefits_in_navigation,()))
         ]
 
@@ -154,6 +158,16 @@ class CLI:
 
         selected_function,parameters = chosen_answer
         selected_function(*parameters)
+
+    def delete_social_benefit(self,social_benefit:Social_Benefit):
+        confirmation = self.get_user_input_confirm("Are you sure you want to remove this social benefit?")
+        if confirmation:
+            self.algorithm.remove_social_benefit(social_benefit)
+            time.sleep(1)
+            self.show_social_benefits_in_navigation()
+        else:
+            print(f"Social benefit '{social_benefit.name}' not removed.")
+            self.edit_social_benefit(social_benefit)
 
     # Menu for editing social benefit-name
                 
@@ -173,7 +187,7 @@ class CLI:
 
                 # print("    " * level + prefix + requirement.get_tree_string())
                 list.append(("    " * level + prefix + requirement.get_tree_string(),(self.edit_requirement,(requirement,social_benefit))))
-                if isinstance(requirement,Logical_Requirement):
+                if isinstance(requirement,Requirement_Logical):
                     for i, child in enumerate(requirement.requirements):
                         is_last_child = i == len(requirement.requirements) - 1
                         child_prefix = "└── " if is_last_child else "├── "
@@ -198,7 +212,7 @@ class CLI:
         
     def edit_requirement(self,requirement:Requirement,social_benefit:Social_Benefit):
 
-        if isinstance(requirement,Logical_Requirement):
+        if isinstance(requirement,Requirement_Logical):
             self.edit_requirement_logical(requirement=requirement,social_benefit=social_benefit)
         elif isinstance(requirement,Requirement_Categorical):
             self.edit_requirement_categorical(requirement=requirement,social_benefit=social_benefit)
@@ -209,7 +223,7 @@ class CLI:
 
     # Menu for editing logical requirements
     
-    def edit_requirement_logical(self,requirement:Logical_Requirement,social_benefit:Social_Benefit):
+    def edit_requirement_logical(self,requirement:Requirement_Logical,social_benefit:Social_Benefit):
             
             message = f"Edit logical requirement '{requirement.get_tree_string()}'"
 
@@ -217,8 +231,8 @@ class CLI:
 
             choices = [
                 ("Remove Requirement", (self.remove_requirement,(requirement,social_benefit))),
-                ("Add AND", (self.edit_social_benefit_requirement,(social_benefit,))),
-                ("Add OR", (self.edit_social_benefit_requirement,(social_benefit,))),
+                ("Add AND", (self.add_requirement_and,(requirement,social_benefit))),
+                ("Add OR", (self.add_requirement_or,(requirement,social_benefit))),
                 ("Add Concrete Requirement", (self.add_requirement_concrete,(requirement,social_benefit))),
                 ("<Back>", (self.edit_social_benefit_requirement,(social_benefit,)))
             ]
@@ -228,8 +242,19 @@ class CLI:
             selected_function,parameters = chosen_answer
             selected_function(*parameters)
 
-    def add_requirement_logical(self,social_benefit:Social_Benefit):
-        pass
+    def add_requirement_and(self,requirement:Requirement_Logical,social_benefit:Social_Benefit):
+        new_logical_requirement = Logical_AND(requirements=[])
+
+        requirement.add_requirement(new_logical_requirement)
+
+        self.edit_social_benefit_requirement(social_benefit=social_benefit)
+
+    def add_requirement_or(self,requirement:Requirement_Logical,social_benefit:Social_Benefit):
+        new_logical_requirement = Logical_OR(requirements=[])
+
+        requirement.add_requirement(new_logical_requirement)
+
+        self.edit_social_benefit_requirement(social_benefit=social_benefit)
 
     # Menu for editing concrete requirements
 
@@ -356,6 +381,8 @@ class CLI:
 
         choices = [(attribute.title, (self.edit_attribute,(attribute,))) for attribute in self.algorithm.attributes]
 
+        choices = sorted(choices, key=lambda x: x[0])
+
         choices += [("<Add Attribute>", (self.add_attribute,()))]
 
         choices += [("<Back>", (self.open_main_menu,()))]
@@ -473,8 +500,6 @@ class CLI:
     def start_dialogue(self):
 
         while self.algorithm.relevant_attributes:
-
-            print(f"Relevant Attributes: {self.algorithm.relevant_attributes}")
 
             best_attribute = self.algorithm.get_best_attribute()
 

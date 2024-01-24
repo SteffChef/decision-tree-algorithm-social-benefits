@@ -155,6 +155,11 @@ class Algorithm:
         self.social_benefits.append(social_benefit)
         self.set_relevant_attributes()
         print(f"Social Benefit {social_benefit.name} successfully added.")
+
+    def remove_social_benefit(self,social_benefit: Social_Benefit):
+        self.social_benefits.remove(social_benefit)
+        self.set_relevant_attributes()
+        print(f"Social Benefit {social_benefit.name} successfully removed.")
     
     def set_relevant_attributes(self) -> Set[str]:
         data = {}

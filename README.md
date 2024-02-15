@@ -18,7 +18,6 @@ cd decision-tree-algorithm-social-benefits.git
 pip install -r requirements.txt
 
 # Start the program
-
 python3 main.py
 ```
 

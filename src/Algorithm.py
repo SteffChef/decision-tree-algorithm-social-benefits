@@ -1,7 +1,7 @@
 from src.Requirement import Logical_AND, Logical_OR, Requirement_Categorical, Requirement_Numerical
 from src.Social_Benefit import Social_Benefit
 from src.Attribute import Attribute, Attribute_Categorical, Attribute_Numerical
-from typing import List,Set
+from typing import Set
 import json
 
 class Algorithm:

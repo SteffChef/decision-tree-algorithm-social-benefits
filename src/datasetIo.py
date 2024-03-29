@@ -1,7 +1,7 @@
 import json
-from attribute import Attribute_Numerical, Attribute_Categorical,Attribute
-from socialBenefit import SocialBenefit
-from requirement import Logical_AND, Logical_OR, Requirement_Categorical, Requirement_Numerical, Requirement
+from src.attribute import Attribute_Numerical, Attribute_Categorical,Attribute
+from src.socialBenefit import SocialBenefit
+from src.requirement import Logical_AND, Logical_OR, Requirement_Categorical, Requirement_Numerical, Requirement
 from typing import List, Tuple, Dict
 
     

@@ -1,7 +1,8 @@
-from src.Algorithm import Algorithm
-from src.CLI import CLI
+from src.dataset import DataSet
+from src.cli import CLI
 
 if __name__ == '__main__':
-    algorithm = Algorithm()
-    cli = CLI(algorithm)
+
+    dataset = DataSet()
+    cli = CLI(dataset)
     cli.run()
